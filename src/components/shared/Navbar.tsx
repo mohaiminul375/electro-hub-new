@@ -1,10 +1,10 @@
 "use client"
 import {
     NavbarBrand, NavbarContent, Navbar, NavbarMenuToggle, NavbarMenuItem, NavbarMenu,
-    // Dropdown,
-    // DropdownTrigger,
-    // DropdownItem,
-    // DropdownMenu, Avatar
+    Dropdown,
+    DropdownTrigger,
+    DropdownItem,
+    DropdownMenu, Avatar
 } from "@nextui-org/react";
 import Image from "next/image";
 import {
@@ -12,13 +12,11 @@ import {
     Sevillana
 } from "next/font/google";
 import React, { useEffect, useState } from "react";
-// import { RxAvatar } from "react-icons/rx";
-// import { signOut, useSession } from "next-auth/react";
-import { FaCartPlus, FaHome, FaSearch } from "react-icons/fa";
+import { signOut, useSession } from "next-auth/react";
+import { FaCartPlus, FaHome, FaSearch, FaUserCircle } from "react-icons/fa";
 import { BiSupport } from "react-icons/bi";
 import { MdAdminPanelSettings } from "react-icons/md";
 import Link from "next/link";
-// import path from "path";
 
 interface NavItems {
     title: string,
@@ -26,12 +24,12 @@ interface NavItems {
     adminOnly?: boolean
 }
 
-
 // font
 const sevillana = Sevillana({
     weight: '400',
     subsets: ['latin'],
 });
+// nav menu
 const navItems: NavItems[] = [
     {
         title: "Home",
@@ -48,13 +46,13 @@ const navItems: NavItems[] = [
 
 ]
 
-
+// Main Nav Func
 export default function Nav2() {
     // Get user session
-    // const session = useSession();
-    // console.log(session)
+    const session = useSession();
+    console.log(session)
     // const isAdmin = session?.data?.user?.role === 'admin';
-    // const user_email = session?.data?.user?.email;
+    const user_email = session?.data?.user?.email;
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolling, setScrolling] = useState(false);
@@ -140,7 +138,7 @@ export default function Nav2() {
                         <Link color="foreground" href="/cart">
                             <FaCartPlus className="text-2xl md:text-3xl" />
                         </Link>
-                        {/* {
+                        {
                             session?.data ?
                                 <Dropdown placement="bottom-end">
                                     <DropdownTrigger>
@@ -166,7 +164,7 @@ export default function Nav2() {
                                         </DropdownItem>
                                         <DropdownItem key="my-orders">My Orders</DropdownItem>
                                         <DropdownItem
-                                            // onClick={() => signOut()}
+                                            onClick={() => signOut()}
                                             key="logout" color="danger">
                                             Log Out
                                         </DropdownItem>
@@ -176,7 +174,7 @@ export default function Nav2() {
                                     <FaUserCircle className="text-2xl md:text-3xl" />
 
                                 </Link>
-                        } */}
+                        }
 
                     </div>
                     {/* functionality for small device */}
@@ -184,7 +182,7 @@ export default function Nav2() {
                         <FaSearch
                             onClick={() => setIsSearchBoxVisible(!isSearchBoxVisible)}
                         />
-                        {/* <div className="flex items-center bg-white text-gray-400 rounded-lg overflow-hidden shadow-md w-52 mr-5  lg:w-96 xl:w-[500px] h-10">
+                        <div className="flex items-center bg-white text-gray-400 rounded-lg overflow-hidden shadow-md w-52 mr-5  lg:w-96 xl:w-[500px] h-10">
                             <input
                                 type="text"
                                 placeholder="Search..."
@@ -195,7 +193,7 @@ export default function Nav2() {
                             >
                                 <FaSearch />
                             </button>
-                        </div> */}
+                        </div>
                     </div>
                 </NavbarContent>
 

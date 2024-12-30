@@ -4,6 +4,8 @@ import "./globals.css";
 import { NextUIProvider } from '@nextui-org/react';
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
+import AuthProvider from "@/services/AuthProvider";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,13 +32,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextUIProvider>
-          <Navbar />
-          {children}
-          <Footer />
-        </NextUIProvider>
-
+        <AuthProvider>
+          <NextUIProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </NextUIProvider>
+        </AuthProvider>
+        <Toaster position="top-center" />
       </body>
-    </html>
+    </html >
   );
 }
