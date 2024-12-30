@@ -1,6 +1,4 @@
-"use client";
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
-import authAnimation from "../../../public/auth.json";
+'use client';
 import { Divider, Input } from '@nextui-org/react';
 import React, { Suspense, useState } from 'react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
@@ -10,12 +8,15 @@ import SocialLogin from '../../components/shared/SocialLogin';
 import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
-export const dynamic = 'force-dynamic';
+import dynamic from 'next/dynamic';
+
+const LottiePlayer = dynamic(() => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player), { ssr: false });
+
 type Inputs = {
-    email: string,
-    password: string,
-    redirects: boolean
-}
+    email: string;
+    password: string;
+    redirects: boolean;
+};
 
 function Page() {
     const router = useRouter();
@@ -23,13 +24,9 @@ function Page() {
     const path = searchParams.get("redirect");
     const [isVisible, setIsVisible] = useState(false);
 
-    const toggleVisibility = () => {
-        setIsVisible(prev => !prev);
-    };
+    const toggleVisibility = () => setIsVisible((prev) => !prev);
 
-
-
-    // react_hook_form
+    // react-hook-form
     const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
     const onSubmit: SubmitHandler<Inputs> = async (user_info) => {
         try {
@@ -43,66 +40,53 @@ function Page() {
                 callbackUrl: path ? path : '/',
             });
 
-            console.log('res from login page', res);
-
             if (res?.status === 200) {
                 router.push('/');
-                return toast.success('Login successfully');
+                toast.success('Login successfully');
             } else {
-                return toast.error('Invalid email or password');
+                toast.error('Invalid email or password');
             }
-        } catch (error: unknown) {
+        } catch (error) {
             console.error("Error during login:", error);
-
-            // Optional: Handle specific error types if needed
-            if (error instanceof Error) {
-                toast.error(error.message || 'An unexpected error occurred');
-            } else {
-                toast.error('Something went wrong, please try again later');
-            }
+            toast.error('Something went wrong, please try again later');
         }
     };
 
     return (
-
-        <section className='grid md:grid-cols-2 gap-5 mt-5 px-4 lg:px-8'>
+        <section className="grid md:grid-cols-2 gap-5 mt-5 px-4 lg:px-8">
             {/* Lottie animation */}
-            <div className='hidden md:flex justify-center'>
-                <Player
-                    autoplay={true}
-                    loop={true}
-                    src={authAnimation}
+            <div className="hidden md:flex justify-center">
+                <LottiePlayer
+                    autoplay
+                    loop
+                    src="/auth.json" // Ensure the correct path to your JSON file
                     style={{ height: 'auto' }}
-                    className='w-full max-w-full'
+                    className="w-full max-w-full"
                 />
-                <Controls visible={true} buttons={['play', 'repeat', 'frame', 'debug']} />
             </div>
 
             {/* Login form */}
             <div>
-                <div className='w-full max-w-[500px] mx-auto border-2 py-8 px-4 md:px-8 rounded-md shadow-2xl border-primary bg-[#F5F5F5]'>
-                    <h2 className='text-center text-2xl md:text-3xl font-bold text-accent'>LogIn</h2>
+                <div className="w-full max-w-[500px] mx-auto border-2 py-8 px-4 md:px-8 rounded-md shadow-2xl border-primary bg-[#F5F5F5]">
+                    <h2 className="text-center text-2xl md:text-3xl font-bold text-accent">LogIn</h2>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         {/* Email input */}
-                        <div className='mt-4'>
+                        <div className="mt-4">
                             <label className="block mb-2 text-accent text-base">Enter Your Email</label>
                             <Input
                                 type="email"
-                                variant='flat'
+                                variant="flat"
                                 label="Email"
-                                color='success'
-                                className=''
+                                color="success"
                                 {...register("email", {
                                     required: "Email is required",
                                     pattern: {
                                         value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                        message: "Please enter a valid email address"
-                                    }
+                                        message: "Please enter a valid email address",
+                                    },
                                 })}
                             />
-                            {errors.email && (
-                                <span className="text-red-500 text-sm">*{errors.email.message}</span>
-                            )}
+                            {errors.email && <span className="text-red-500 text-sm">*{errors.email.message}</span>}
                         </div>
 
                         {/* Password input */}
@@ -111,8 +95,8 @@ function Page() {
                             <Input
                                 fullWidth
                                 label="Password"
-                                color='success'
-                                variant='flat'
+                                color="success"
+                                variant="flat"
                                 endContent={
                                     <button
                                         className="focus:outline-none"
@@ -132,18 +116,16 @@ function Page() {
                                     required: 'Password is required',
                                     minLength: {
                                         value: 6,
-                                        message: 'Password must be at least 6 characters long'
-                                    }
+                                        message: 'Password must be at least 6 characters long',
+                                    },
                                 })}
                             />
-                            {errors.password && (
-                                <span className="text-red-500 text-sm">*{errors.password.message}</span>
-                            )}
+                            {errors.password && <span className="text-red-500 text-sm">*{errors.password.message}</span>}
                         </div>
 
                         {/* Submit button */}
-                        <div className='mt-5'>
-                            <button className='w-full py-2 bg-primary text-white rounded-md hover:rounded-2xl duration-700 hover:bg-hoverPrimary'>
+                        <div className="mt-5">
+                            <button className="w-full py-2 bg-primary text-white rounded-md hover:rounded-2xl duration-700 hover:bg-hoverPrimary">
                                 Login
                             </button>
                         </div>
@@ -153,10 +135,10 @@ function Page() {
                     <div>
                         <Divider className="my-4" />
                         <SocialLogin />
-                        <div className='mt-5'>
-                            <p className='text-center text-base'>
+                        <div className="mt-5">
+                            <p className="text-center text-base">
                                 New here?{' '}
-                                <Link className='text-accent hover:underline hover:text-primary duration-700' href='/register'>
+                                <Link className="text-accent hover:underline hover:text-primary duration-700" href="/register">
                                     Register
                                 </Link>
                             </p>
@@ -165,13 +147,13 @@ function Page() {
                 </div>
             </div>
         </section>
-
-
     );
 }
-// Add suspense for suggest by Next.js
+
 export default function Login() {
-    return (<Suspense>
-        <Page />
-    </Suspense>)
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Page />
+        </Suspense>
+    );
 }
